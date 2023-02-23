@@ -19,19 +19,26 @@ let currentScreen = 'game';
     function draw() {
         // continously set the background color to black
         background(0, 0, 0);
+        // draws the lunar lander
+        lunarLander(x,y,rotation);
 
         // tests if the current screen is actually the game screen
         if (currentScreen === 'game') {
             // the falling motion
             y += gravity;
-            lunarLander(x,y,rotation);
+
+            x += Math.cos(rotation) * speed;
      
             if (keyIsDown(38)) {
-                speed = 5;
-                gravity -= 0.02;
+                speed = 1; 
+                gravity -= 0.02; 
+            }
+            else if (keyIsDown(40)) {
+                speed = -1;
+                gravity += 0.06;
             }
             else {
-                gravity += 0.05;
+                gravity += 0.05; 
             }
 
             if (keyIsDown(37)) {
@@ -46,18 +53,29 @@ let currentScreen = 'game';
                 currentScreen = 'result';
             }
         }
-    }
+        else if (currentScreen === 'result') {
 
-    function draw() {
-        if (currentScreen === 'result') {  
+            if (gravity < 3) {
+                console.log('win'); 
+            }
+            else {
+                console.log('fail');
+            }
+        
         }
-    }
+    } 
+
+    
 
 function mouseClicked() {
     if (currentScreen === 'start') {
         currentScreen = 'game';
+        y = 100;
+        gravity = 0.5;
     }
-    else if (currentScreen === 'result') {
+    else if (currentScreen === 'result') { 
         currentScreen = 'game';
+        y = 100;
+        gravity = 0.5;
     }
 }
