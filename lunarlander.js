@@ -1,14 +1,19 @@
+
 function setup() {
     let canvas = createCanvas(windowWidth,windowHeight);
     canvas.style('display','block');
     frameRate(30);
 }
 
+function windowResized() {
+    resizeCanvas(windowWidth,windowHeight);
+}
+
 function ground() {
     push();
     fill(255,255,255);
-    translate(windowWidth/2,-15);
-    ellipse(0,windowHeight,windowWidth,100);
+    translate(0,-50);
+    rect(0,windowHeight,windowWidth,50);
     pop();
 }
 
@@ -23,8 +28,8 @@ function ground() {
 let stars = [];
 
 function createStars() {
-    const starX = Math.random() * windowWidth;
-    const starY = Math.random() * windowHeight;
+    const starX = Math.random() * window.innerWidth;
+    const starY = Math.random() * window.innerHeight;
     return {starX:starX, starY:starY};
 }
 function drawStars(star) { 
@@ -42,34 +47,75 @@ for (let i = 0; i < 150; i++) {
 }
 
 // ----------------------------------
-//     lunar lander/smoke design
+//     TARDIS
 // ----------------------------------
 
-// designing the lunar lander itself
-function lunarLander(x, y, rotation) { 
+let colorOfLight = [200,200,200];
+
+function tardis(x,y,rotation,r,g,b) {
     push();
-    translate(x,y);
     rotate(rotation);
+    translate(-200,-200);
+    fill(30, 42, 115); //the main structure
+    noStroke();
+    rect(x,y,60,125); //the box
+    rect(x+1.25,y-10,57.5,10); //the top part
+    rect(x+25,y-18,10,8.5); //the light holder
+    triangle(x+24,y-18,x+30,y-22,x+36,y-18); //the top of the light
+    
+    fill(r,g,b); //the light itself
+    rect(x+26.5,y-17.5,7.5,7.5);
+
+    fill(0,0,0); //the sign
+    rect(x+5,y+2.5,50,10);
     fill(255,255,255);
-    ellipse(0,0,25,25);
-    triangle(-10,10,0,0,10,10);
+    textSize(3.5);
+    textAlign(CENTER,CENTER);
+    text('POLICE',x+15,y+7.5);
+    text('BOX',x+44.5,y+7.5);
+    text('PUBLIC CALL',x+26.5,y+5.5,10);
+
+    fill(38, 53, 145); //the doors
+    rect(x+5,y+15,50,105);
+
+    fill(59, 73, 161); //the door panels
+    rect(x+7.5,y+94,20,23.125);
+    rect(x+32.5,y+94,20,23.125);
+    rect(x+7.5,y+68.375,20,23.125);
+    rect(x+32.5,y+68.375,20,23.125);
+    rect(x+7.5,y+42.75,20,23.125);
+    rect(x+32.5,y+42.75,20,23.125);
+
+    fill(255,255,255); //the paper and the logo on the door
+    rect(x+10,y+45,15,17.5);
+    ellipse(x+42.5,y+50,7.5,7.5);
+    fill(0,0,0);
+    ellipse(x+42.5,y+50,5,5);
+
+    stroke(255,255,255); //the windows
+    fill(0,0,0);
+    rect(x+7.5,y+17.125,6.65,11.562);
+    rect(x+14.15,y+17.125,6.65,11.562);
+    rect(x+20.8,y+17.125,6.65,11.562);
+    rect(x+7.5,y+28.6875,6.65,11.562);
+    rect(x+14.15,y+28.6875,6.65,11.562);
+    rect(x+20.8,y+28.6875,6.65,11.562);
+
+    rect(x+32.5,y+17.125,6.65,11.562);
+    rect(x+39.15,y+17.125,6.65,11.562);
+    rect(x+45.8,y+17.125,6.65,11.562);
+    rect(x+32.5,y+28.6875,6.65,11.562);
+    rect(x+39.2,y+28.6875,6.65,11.562);
+    rect(x+45.8,y+28.6875,6.65,11.562);
     pop();
 }
-// designing the 'smoke' 
-function smoke(x,y,rotation) {
-    push();
-    translate(x,y);
-    rotate(rotation);
-    rect(-12.5,0,25,20); 
-    pop();
-} 
 
 // ----------------------------------
 //       functionality
 // ----------------------------------
 
-let x = (windowWidth/2)-25; 
-let y = 100;
+let x = 500; 
+let y = 500;
 let rotation = 0;
 let speed = 0;
 let gravity = 0.5;
@@ -83,7 +129,7 @@ let currentScreen = 'game';
         background(0, 0, 0);
         ground();
         // draws the lunar lander
-        lunarLander(x,y,rotation);
+        tardis(x,y,rotation);
 
         for (let star of stars) {
             drawStars(star);
@@ -92,15 +138,13 @@ let currentScreen = 'game';
         // tests if the current screen is actually the game screen
         if (currentScreen === 'game') {
             // the falling motion
-            y += gravity;
+
 
             x += Math.cos(rotation) * speed;  
             y += Math.sin(rotation);
      
             if (keyIsDown(38)) {
-                speed += 0.01;  
-                gravity -= speed; 
-                smoke(x,y,rotation);
+                speed += 0.02;   
             } 
             else if (keyIsDown(40)) { 
                 speed = -1;
@@ -108,6 +152,7 @@ let currentScreen = 'game';
             }
             else {
                 gravity += 0.05; 
+                speed = 0;
             }
 
             if (keyIsDown(37)) {
@@ -118,7 +163,7 @@ let currentScreen = 'game';
             }
 
             // tests for fail/completion
-            if (y >= windowHeight) {
+            if (y >= windowHeight-50) {
                 currentScreen = 'result';
             }
             
@@ -140,14 +185,16 @@ let currentScreen = 'game';
 function mouseClicked() {
     if (currentScreen === 'start') {
         currentScreen = 'game';
-        let x = windowWidth/2; 
+        x = windowWidth/2; 
         y = 100;
+        rotation = 0;
         gravity = 0.5;
     }
     else if (currentScreen === 'result') { 
         currentScreen = 'game';
-        let x = windowWidth/2;  
+        x = windowWidth/2;  
         y = 100;
+        rotation = 0;
         gravity = 0.5;
     }
 }
