@@ -1,10 +1,15 @@
 let colorOfLight = [200,200,200];
 let rotation = 0;
 
+function setup() {
+    rectMode(CENTER);
+}
+
 function tardis(x,y,rotation,r,g,b) {
     push();
-    rotate(rotation);
-    translate(x-390,y-390);
+    
+    translate(width/2,height/2);
+    console.log(width);
     fill(30, 42, 115); //the main structure
     noStroke();
     rect(x,y,60,125); //the box
@@ -60,8 +65,9 @@ function tardis(x,y,rotation,r,g,b) {
 }
 
 function draw() {
+    rotate(rotation);
     background(255,255,255);
-    tardis(250,250,rotation,colorOfLight);
+    tardis(0,0,rotation,colorOfLight);
 
     if (keyIsDown(37)) {
         rotation += 0.05;
@@ -70,3 +76,20 @@ function draw() {
         rotation -= 0.05;
     }
 }
+
+// var x = 0;
+
+// function setup() { 
+//   createCanvas(400, 400);
+//   rectMode(CENTER);
+// } 
+
+// function draw() { 
+//   background(220);
+	
+  
+// 	x+= 0.02;
+//   translate (width/2, height/2);
+//   rotate(x);
+// 	rect(0, 0, 120, 400);
+// }
