@@ -3,6 +3,9 @@ function setup() {
     let canvas = createCanvas(windowWidth,windowHeight);
     canvas.style('display','block');
     frameRate(30);
+    textFont('Courier');
+    textSize(35);
+    textAlign(CENTER,CENTER);
 }
 
 function windowResized() {
@@ -124,8 +127,21 @@ let currentScreen = 'start';
 let lampColor = [0,0,0];
 let clickToStartColor = [255,255,255,255];
 let clickToStartColorIsFading = true;
+let fuelInTank = 1000;
  
     function draw() {
+        if (clickToStartColorIsFading === true) {
+            clickToStartColor[3] -=5;
+        }
+        else if (clickToStartColorIsFading === false) {
+            clickToStartColor[3] +=5;
+        }
+        if (clickToStartColor[3] === 90) {
+            clickToStartColorIsFading = false;
+        }
+        else if (clickToStartColor[3] === 255) {
+            clickToStartColorIsFading = true;
+        }
     for (let star of stars) {
         drawStars(star);
     }
@@ -144,17 +160,22 @@ let clickToStartColorIsFading = true;
 
         // tests if the current screen is actually the game screen
         if (currentScreen === 'game') {
-
+            push();
+            fill(255,255,255);
+            textAlign(RIGHT,CENTER);
+            text('Fuel:' + fuelInTank,width-10,20);
+            pop();
             
             
             x += Math.sin(rotation) * speed; 
             y += Math.cos(rotation) * gravity; 
 
 
-            if (keyIsDown(32)) {
+            if (keyIsDown(32) && fuelInTank > 0) { //if space is pressed and there is tank in the fuel
                 speed += 0.02;
                 gravity -= 0.01;
                 lampColor = [145, 185, 250];   
+                fuelInTank -= 1;
             } 
             else {
                 gravity += 0.02;
@@ -187,58 +208,51 @@ let clickToStartColorIsFading = true;
             
         }
         else if (currentScreen === 'result') {
-
+            fill(255,255,255);
             if (gravity < 3) {
-                console.log('win'); 
+                text('You Landed Safely!',width/2,200);
+                fill(clickToStartColor);
+                text('Play Again',width/2,400);
             }
             else { 
-                console.log('fail');
+                text('You Crashed!',width/2,200);
+                text('The Daleks are on their way',width/2,300);
+                fill(clickToStartColor);
+                text('Try Again',width/2,400);
             }
         
         }
         else if (currentScreen === 'start') {
             fill(255,255,255);
-            textFont('Courier');
-            textSize(35);
-            textAlign(CENTER,CENTER);
             text('TARDIS Lander',width/2,200);
             textSize(30);
             text('Help the Doctor land safely!',width/2,300);
             fill(clickToStartColor);
             text('Click to Start',width/2,400);
-    
-                if (clickToStartColorIsFading === true) {
-                    clickToStartColor[3] -=5;
-                }
-                else if (clickToStartColorIsFading === false) {
-                    clickToStartColor[3] +=5;
-                }
-                if (clickToStartColor[3] === 90) {
-                    clickToStartColorIsFading = false;
-                }
-                else if (clickToStartColor[3] === 255) {
-                    clickToStartColorIsFading = true;
-                }
         }
     }   
     
-      
- 
-function mouseClicked() {
-    if (currentScreen === 'start') {
-        currentScreen = 'game';
+function play() {
+    if (currentScreen !== 'game') {
         x = windowWidth/2; 
         y = 100;
         rotation = 0;
         gravity = 0.5;
+        fuelInTank = 1000;
+    }
+    if (currentScreen === 'start') {
+        currentScreen = 'game';
     }
     else if (currentScreen === 'result') { 
         currentScreen = 'start';
-        x = windowWidth/2;  
-        y = 100;
-        rotation = 0;
-        gravity = 0.5;
     }
+}
+ 
+function mouseClicked() {
+    play();
+}
+function keyPressed() {
+    play();
 }
 
 
