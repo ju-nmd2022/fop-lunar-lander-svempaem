@@ -1,4 +1,5 @@
 
+let colorOfLight = [200,200,200];
 
 function tardis(x,y,rotation,r,g,b) {
     push();
@@ -59,20 +60,55 @@ function tardis(x,y,rotation,r,g,b) {
     pop();
 }
 
-let x = 200;
-let y = 200;
+
+let x = window.innerWidth/2; 
+let y = 100;
 let rotation = 0;
+let speed = 0;
+let gravity = 0.2;
+let currentScreen = 'start';
+let lampColor = [0,0,0];
+let clickToStartColor = [255,255,255,255];
+let clickToStartColorIsFading = true;
+let fuelInTank = 1000;
 
-function draw() { 
-  background(220);
-	
-  tardis(x,y,rotation,0,0,0);
+function draw() {
 
-  if (keyIsDown(37)) {
-    rotation += 0.1;
-  }
-  else if (keyIsDown(39)) {
-    rotation -= 0.1;
-  }
-}
+            x += Math.sin(rotation) * speed; 
+            
 
+            y += gravity;
+
+            background(0,0,0);
+            tardis(x,y,rotation); 
+
+            if (keyIsDown(32) && fuelInTank > 0) { //if space is pressed and there is tank in the fuel
+                speed += 0.02;
+                gravity -= 0.01;
+                lampColor = [145, 185, 250];   
+                fuelInTank -= 1;  
+            } 
+            else {
+                gravity += 0.02;
+                speed = 0;
+                lampColor = [0,0,0];
+            }
+     
+            if (keyIsDown(38)) {
+                speed += 0.02;   
+            } 
+            else if (keyIsDown(40)) { 
+                speed = -1;
+
+            }
+            else {
+
+            }
+
+            if (keyIsDown(37)) {
+                rotation -= 0.05;
+            }
+            else if (keyIsDown(39)) {
+                rotation += 0.05;
+            }
+          }

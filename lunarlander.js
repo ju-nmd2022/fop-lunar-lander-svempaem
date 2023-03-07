@@ -1,104 +1,107 @@
+//setup the canvas, etc.
 
-function setup() {
-    let canvas = createCanvas(windowWidth,windowHeight);
-    canvas.style('display','block');
-    frameRate(30);
-    textFont('Courier');
-    textSize(35);
-    textAlign(CENTER,CENTER);
+function setup() { 
+    let canvas = createCanvas(windowWidth,windowHeight); //create a canvas the width and height of the window
+    canvas.style('display','block'); //display the canvas as block
+    frameRate(30); //set fps to 30
+    textFont('Courier'); //set the font used to Courier;
+    textSize(35); //set the default text size to 35 
+    textAlign(CENTER,CENTER); //align and justify text to center by default
 }
 
-function windowResized() {
-    resizeCanvas(windowWidth,windowHeight);
-}
+function windowResized() { //when window is resized...
+    resizeCanvas(windowWidth,windowHeight); //...resize the canvas to fit the new size
+} 
+
+//the ground
 
 function ground() {
-    push();
-    fill(255,255,255);
-    translate(0,-60);
-    rect(0,windowHeight,windowWidth,50);
-    pop();
-}
+    push(); //start of new properties
+    fill(255,255,255); //set fill color to white
+    translate(0,-60); //offset x by 0 and y by -60 
+    rect(0,windowHeight,windowWidth,50); //the surface
 
-// create function to calculate ellipse
+    rect(0,windowHeight-50,50,50); //the right 1000 rect
+    rect(windowWidth-50,windowHeight-50,50,50); //the left one
+    
+    fill(0,0,0); //set fill (text) color to black
+    textSize(20); //set text size to 20
+    text('100',0,windowHeight,windowWidth,50); //the text on the surface
+    text('1000',0,windowHeight-50,50,50); //the right 1000 rects text
+    text('1000',windowWidth-50,windowHeight-50,50,50); //the left 1000 rects text
+    pop(); //end of new properties
+}
 
 // ----------------------------------
-//          stars func
+//          stars
 // ---------------------------------- 
 
-// background: functions for having stars appear at rand pos
+let stars = []; //let stars be an empty array
 
-let stars = [];
-
-function createStars() {
-    const starX = Math.random() * window.innerWidth;
-    const starY = Math.random() * window.innerHeight;
-    return {starX:starX, starY:starY};
+function createStars() { //function to create random positions for stars
+    const starX = Math.random() * window.innerWidth; //place starX at a random position inside the window
+    const starY = Math.random() * window.innerHeight; //same with starY
+    return {starX:starX, starY:starY}; //return a simple object where starX has value of the starX const and vice versa with starY
 }
-function drawStars(star) { 
-    push(); 
-    translate(star.starX,star.starY);
-    fill(255,255,255); 
-    ellipse(0,0,4);
-    pop();
+function drawStars(star) { //draw the stars (when called upon later)
+    push(); //start of new properties
+    translate(star.starX,star.starY); //offset by starX and starY of the simple object 'star'
+    fill(255,255,255); //set fill color to white
+    ellipse(0,0,4); //draw ellipse at x 0 and y 0 (in relation to their offset) and 4x4 big
+    pop(); //end of new properties
 }
 
-for (let i = 0; i < 150; i++) {
-    // create 150 stars with random position
-    const star = createStars();
-    stars.push(star);
+for (let i = 0; i < 150; i++) { //loop that runs 150 times, thus pushing out 150 star positions
+    const star = createStars(); //create star variable (simple object), that gets new values from createStars function every time the loop is run
+    stars.push(star); //add the star values to the stars array
 }
 
 // ----------------------------------
 //     TARDIS
 // ----------------------------------
 
-let colorOfLight = [200,200,200];
-
-function tardis(x,y,rotation,r,g,b) {
-    push();
-    
-    translate(x,y);
-    rotate(rotation);
-    fill(30, 42, 115); //the main structure
-    noStroke();
-    rect(-30,-65,60,130); //the box
+function tardis(x,y,rotation,r,g,b) { //the tardis (main character!) 
+    push(); //start of new properties
+    scale(0.5); //make it half as big
+    translate(x*2,y*2); //offset by x*2 and y*2
+    rotate(rotation); //rotate by the amount specified by the variable 'rotation'
+    fill(30, 42, 115); //set fill color to blue
+    noStroke(); //remove the stroke
+    rect(-30,-65,60,130); //the box 
     rect(-27.5,-72,55,10); //the top part
     rect(-5,-80,10,8.5); //the light holder
     triangle(-6,-80,0,-85,6,-80); //the top of the light
     
-    fill(r,g,b); //the light itself
-    rect(-3.875,-79,7.5,7.5);
+    fill(r,g,b); //let the fill color of light be specified by the r,g,b variables
+    rect(-3.875,-79,7.5,7.5); //the light
 
-    fill(0,0,0); //the sign
-    rect(-25,-60,50,10);
-    fill(255,255,255);
-    textSize(3.5);
-    textAlign(CENTER,CENTER);
-    text('POLICE',-15,-55);
-    text('BOX',15,-55);
+    fill(0,0,0); //set fill color to black
+    rect(-25,-60,50,10); //the sign
+    fill(255,255,255); //set fill color to white
+    textSize(3.5); //set text size to 3.5
+    text('POLICE',-15,-55); //self explanatory
+    text('BOX',15,-55); 
     text('PUBLIC CALL',-4,-57,10);
 
-    fill(38, 53, 145); //the doors
-    rect(-25,-50,50,110);
+    fill(38, 53, 145); //set fill to lighter blue
+    rect(-25,-50,50,110); //the doors
 
-    fill(59, 73, 161); //the door panels
-    rect(-22.5,36,20,22);
+    fill(59, 73, 161); //set fill to even lighter blue
+    rect(-22.5,36,20,22); //the door panels
     rect(2,36,20,22);
     rect(-22.5,10,20,22);
     rect(2,10,20,22);
     rect(-22.5,-16,20,22);
     rect(2,-16,20,22);
 
-    fill(255,255,255); //the paper and the logo on the door
-    rect(-20,-14,15,16);
+    fill(255,255,255); //set fill to white
+    rect(-20,-14,15,16); //the paper and the logo on the door
     ellipse(6+20/3,-9,20/3,20/3);
-    fill(0,0,0);
+    fill(0,0,0); // set fill to black
     ellipse(6+20/3,-9,4,4);
 
-    stroke(255,255,255); //the windows
-    fill(0,0,0);
-    rect(-22.5,-45,20/3,11.5);
+    stroke(255,255,255); //add white stroke
+    rect(-22.5,-45,20/3,11.5); //the windows
     rect(-16,-45,20/3,11.5);
     rect(-9.5,-45,20/3,11.5);
     rect(2,-45,20/3,11.5);
@@ -111,110 +114,148 @@ function tardis(x,y,rotation,r,g,b) {
     rect(2,-34,20/3,11.5);
     rect(8.5,-34,20/3,11.5);
     rect(15,-34,20/3,11.5);
-    pop();
+    pop(); //end of new properties
 }
 
 // ----------------------------------
 //       functionality
 // ----------------------------------
 
-let x = window.innerWidth/2; 
-let y = 100;
-let rotation = 0;
-let speed = 0;
-let gravity = 0.2;
-let currentScreen = 'start';
-let lampColor = [0,0,0];
-let clickToStartColor = [255,255,255,255];
-let clickToStartColorIsFading = true;
-let fuelInTank = 1000;
+let x; //to be given a starting value...
+let y;
+let rotation;
+let speed;
+let gravity;
+let fuelInTank;
+let timeOfThrust;
+let timeOfNoThrust;
+let score; //...in the play() function
+
+let currentScreen = 'start'; //tells the game what screen should be displayed
+let lampColor = [0,0,0]; //array, gives the lamp color a start value (black)
+let clickToStartColor = [255,255,255,255]; //array, gives the buttons that fade a starting opacity of 255
+let clickToStartColorIsFading = true; //the fading buttons are fading out to start with (and not in, which would be false)
  
-    function draw() {
-        if (clickToStartColorIsFading === true) {
+// draw the game
+
+    function draw() { 
+
+        //if the fading buttons are fading out (as defined by the boolean), remove opacity
+        if (clickToStartColorIsFading === true) { 
             clickToStartColor[3] -=5;
         }
+        // if not, add opacity
         else if (clickToStartColorIsFading === false) {
             clickToStartColor[3] +=5;
         }
+        //change the boolean back and forth if the opacity hits a min or max value
         if (clickToStartColor[3] === 90) {
             clickToStartColorIsFading = false;
         }
         else if (clickToStartColor[3] === 255) {
             clickToStartColorIsFading = true;
         }
-    for (let star of stars) {
-        drawStars(star);
-    }
+
         // continously set the background color to black
         background(0, 0, 0);
-        ground();
+        ground(); //draw the ground
+
+        //if the current screen is 'game' or 'result', draw the tardis
         if (currentScreen === 'game' || currentScreen === 'result') {
-        // draws the lunar lander
-        tardis(x,y,rotation,lampColor);
-        }
         
+        tardis(x,y,rotation,lampColor); // draw the tardis
 
-        for (let star of stars) {
-            drawStars(star);
+        }
+    
+        //draw the stars
+        for (let star of stars) { //loop that runs 150 times (the number of star values in the stars array)
+            drawStars(star); //draw stars at the random star positions
         }
 
-        // tests if the current screen is actually the game screen
-        if (currentScreen === 'game') {
-            push();
-            fill(255,255,255);
-            textAlign(RIGHT,CENTER);
-            text('Fuel:' + fuelInTank,width-10,20);
+        // test if the current screen is the game screen
+    if (currentScreen === 'game') {
+            push(); //start of new properties
+            fill(255,255,255); //set fill to white
+            textAlign(RIGHT,CENTER); //justify text right, align center
+            text('Fuel: ' + fuelInTank,width-10,20); //self explanatory
+            text('Thrust:' + (speed*10).toFixed(0),width-10,50);
+            text('Gravity Pull: ' + (gravity*10).toFixed(0),width-10,80);
             pop();
-            
-            
-            x += Math.sin(rotation) * speed; 
-            y += Math.cos(rotation) * gravity; 
 
+            if (x >= width || x <= 0) { // "out of bounds x"
+                x -= 50;
+            }
+            if (y <= 0) { // "out of bounds y"
+                y += 50;
+            }
+
+            x += Math.sin(rotation) * speed; //enables horizontal movement and changes it depending on the rotation of the tardis
+            y += gravity; //the tardis falls with gravity
+
+            if (gravity > -0.5) { // min gravity
+                gravity -= (speed/30); //when above min gravity, gravity is lowered by speed, adjusted for the fps
+            }
+            if (gravity < 2) { // max gravity
+                gravity += timeOfNoThrust/1000; //when below max gravity, gravity is increased depending on how long the thruster has been off
+            }
+
+            // button presses
 
             if (keyIsDown(32) && fuelInTank > 0) { //if space is pressed and there is tank in the fuel
-                speed += 0.02;
-                gravity -= 0.01;
-                lampColor = [145, 185, 250];   
-                fuelInTank -= 1;
+                timeOfThrust += 1/30; //count the thrust time
+                if (speed < 1.5) { //max speed
+                    speed += timeOfThrust/1000; //if speed is below max speed, increase speed depending on how long the thruster is pressed
+                }
+
+                timeOfNoThrust = 0; //reset count for the thrust being unpressed
+                
+                lampColor = [145, 185, 250]; //the lamp becomes blue while thrust is on  
+                fuelInTank -= 1; //the fuel goes down while thrust is on 
             } 
-            else {
-                gravity += 0.02;
-                speed = 0;
-                lampColor = [0,0,0];
-            }
-     
-            if (keyIsDown(38)) {
-                speed += 0.02;   
-            } 
-            else if (keyIsDown(40)) { 
-                speed = -1;
 
-            }
-            else {
-
+            else { 
+                if (speed > 0.02) { //as long as speed is above 0.05 (to avoid negative speed)
+                    speed -= 0.02; //deacellerate
+                }
+                timeOfNoThrust += 1/30; //count the 'no thrust' time
+                lampColor = [0,0,0]; //lamp becomes black while thrust is off
+                timeOfThrust = 0; //reset counter for thrust
             }
 
-            if (keyIsDown(37)) {
-                rotation -= 0.05;
+            //rotate left or right depending on what arrow key is pressed
+            if (keyIsDown(37)) { 
+                rotation -= 0.04;
             }
+
             else if (keyIsDown(39)) {
-                rotation += 0.05;
+                rotation += 0.04;
             }
 
-            // tests for fail/completion
-            if (y >= windowHeight-120) {
+            // test for fail/completion
+            if (y >= windowHeight-90) { //score 100
                 currentScreen = 'result';
+                score = 100;
             }
+            else if (y >= windowHeight - 140) {
+                if ((x > 0 && x < 64) || (x > windowWidth -64 && x < windowWidth)) { //score 1000
+                    currentScreen = 'result';
+                    score = 1000;
+                }
+            }
+
             
         }
-        else if (currentScreen === 'result') {
+
+        //test if the current screen is the result screen
+    else if (currentScreen === 'result') {
             fill(255,255,255);
-            if (gravity < 3) {
-                text('You Landed Safely!',width/2,200);
+            if (gravity < 0.3) { //win
+                text('You Landed Safely!', width/2, 200);
+                text('Score: ' + score, width/2, 400);
                 fill(clickToStartColor);
-                text('Play Again',width/2,400);
+                text('Play Again', width/2, 600);
             }
-            else { 
+            else { //lose
                 text('You Crashed!',width/2,200);
                 text('The Daleks are on their way',width/2,300);
                 fill(clickToStartColor);
@@ -222,7 +263,9 @@ let fuelInTank = 1000;
             }
         
         }
-        else if (currentScreen === 'start') {
+
+        //test if the current screen is the start screen
+    else if (currentScreen === 'start') {
             fill(255,255,255);
             text('TARDIS Lander',width/2,200);
             textSize(30);
@@ -232,27 +275,32 @@ let fuelInTank = 1000;
         }
     }   
     
-function play() {
-    if (currentScreen !== 'game') {
-        x = windowWidth/2; 
-        y = 100;
-        rotation = 0;
-        gravity = 0.5;
-        fuelInTank = 1000;
-    }
-    if (currentScreen === 'start') {
+function play() { //function to setup the game
+    if (currentScreen !== 'game') { // only works if the current screen is not the game screen
+        x = windowWidth/2; //start in the middle of the screen
+        y = 200; //and at y pos 200
+        rotation = 0; //no rotation
+        gravity = 0.6; //0.6 gravity pull
+        fuelInTank = 2000; //starting fuel
+        speed = 0; //zero fuel
+        timeOfThrust = 0; //reset...
+        timeOfNoThrust = 0; //...counters
+        score = 0; //reset score
+
+    if (currentScreen === 'start') { //if screen is start, make it game
         currentScreen = 'game';
     }
-    else if (currentScreen === 'result') { 
+    else if (currentScreen === 'result') { //if screen is result, make it start
         currentScreen = 'start';
+    }
     }
 }
  
-function mouseClicked() {
-    play();
+function mouseClicked() { //self explanatory
+    play(); //run play() function
 }
-function keyPressed() {
-    play();
+function keyPressed() { //---||---
+    play(); //---||---
 }
 
 
