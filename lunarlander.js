@@ -57,7 +57,7 @@ for (let i = 0; i < 150; i++) { //loop that runs 150 times, thus pushing out 150
 }
 
 // ----------------------------------
-//     TARDIS
+//     TARDIS + thrust
 // ----------------------------------
 
 function tardis(x,y,rotation,r,g,b) { //the tardis (main character!) 
@@ -117,6 +117,12 @@ function tardis(x,y,rotation,r,g,b) { //the tardis (main character!)
     pop(); //end of new properties
 }
 
+    function thrust(x,y,rotation) {
+        push();
+        fill(255,255,255);
+        pop();
+    }
+
 // ----------------------------------
 //       functionality
 // ----------------------------------
@@ -136,6 +142,9 @@ let lampColor = [0,0,0]; //array, gives the lamp color a start value (black)
 let clickToStartColor = [255,255,255,255]; //array, gives the buttons that fade a starting opacity of 255
 let clickToStartColorIsFading = true; //the fading buttons are fading out to start with (and not in, which would be false)
  
+let smokeParticles = []; 
+
+
 // draw the game
 
     function draw() { 
@@ -160,6 +169,21 @@ let clickToStartColorIsFading = true; //the fading buttons are fading out to sta
         background(0, 0, 0);
         ground(); //draw the ground
 
+        function createSmoke() { 
+            const smokeX = Math.random() * 40; 
+            const smokeY = Math.random() * 35; 
+            return {smokeX:smokeX, smokeY:smokeY}; 
+        }
+        function drawSmoke(smoke) { 
+            push(); 
+            noStroke();
+            translate(-20,35);
+            translate(smoke.smokeX,smoke.smokeY); 
+            fill(255,255,255,Math.random(255)*10); 
+            ellipse(0,0,20); 
+            pop(); 
+        }
+
         //if the current screen is 'game' or 'result', draw the tardis
         if (currentScreen === 'game' || currentScreen === 'result') {
         
@@ -181,6 +205,20 @@ let clickToStartColorIsFading = true; //the fading buttons are fading out to sta
             text('Thrust:' + (speed*10).toFixed(0),width-10,50);
             text('Gravity Pull: ' + (gravity*10).toFixed(0),width-10,80);
             pop();
+            
+            // the smoke
+
+            while (smokeParticles.length < (timeOfThrust*30)) {
+                const smoke = createSmoke();
+                smokeParticles.push(smoke); 
+            }   
+            for (let smoke of smokeParticles) { 
+                push();
+                translate(x,y);
+                rotate(rotation);
+                drawSmoke(smoke,x,y); 
+                pop();
+            }
 
             if (x >= width || x <= 0) { // "out of bounds x"
                 x -= 50;
@@ -210,7 +248,11 @@ let clickToStartColorIsFading = true; //the fading buttons are fading out to sta
                 timeOfNoThrust = 0; //reset count for the thrust being unpressed
                 
                 lampColor = [145, 185, 250]; //the lamp becomes blue while thrust is on  
-                fuelInTank -= 1; //the fuel goes down while thrust is on 
+                fuelInTank -= 1; //the fuel goes down while thrust is on
+                
+                setTimeout(function () {
+                    smokeParticles.shift();
+                },2000);
             } 
 
             else { 
@@ -220,6 +262,8 @@ let clickToStartColorIsFading = true; //the fading buttons are fading out to sta
                 timeOfNoThrust += 1/30; //count the 'no thrust' time
                 lampColor = [0,0,0]; //lamp becomes black while thrust is off
                 timeOfThrust = 0; //reset counter for thrust
+
+                smokeParticles = []; //clear the array for smoke
             }
 
             //rotate left or right depending on what arrow key is pressed
@@ -282,7 +326,7 @@ function play() { //function to setup the game
         rotation = 0; //no rotation
         gravity = 0.6; //0.6 gravity pull
         fuelInTank = 2000; //starting fuel
-        speed = 0; //zero fuel
+        speed = 0; //zero speed
         timeOfThrust = 0; //reset...
         timeOfNoThrust = 0; //...counters
         score = 0; //reset score
